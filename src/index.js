@@ -1,4 +1,4 @@
-import 'dotenv/config'
+open -e ~/telegram-bot/src/index.jsimport 'dotenv/config'
 import { Telegraf, Markup }  from 'telegraf'
 import express               from 'express'
 import cron                  from 'node-cron'
@@ -152,7 +152,7 @@ const { data: transaction } = await supabase
     .eq('gateway_id', omegaIdentifier).single()
  
   if (!transaction) {
-    console.warn('[webhook] transaction não encontrada:', transactionId)
+    console.warn('[webhook] transaction não encontrada:', omegaIdentifier)
     return res.json({ ok: true })
   }
   if (transaction.status === 'paid') return res.json({ ok: true })
