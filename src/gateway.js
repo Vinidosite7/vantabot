@@ -14,16 +14,16 @@ export async function gerarPix({ valor, descricao, webhookUrl, externalId }) {
     identifier:  externalId,
     amount:      valor,
     client: {
-      name:     'Cliente',
-      email:    'cliente@bot.com',
-      document: '00000000000',
+      name:     'Cliente VIP',
+      email:    'cliente@vantabot.com',
+      document: '12345678909',
     },
-    callbackUrl: webhookUrl,
+    callbackUrl: 'https://vantabot-7wmy.onrender.com/webhook/pix',
   })
 
   return {
-    gatewayId:     data.transaction?.id ?? data.transactionId,
-    pixCopiaECola: data.pix?.copiaECola ?? data.pix?.code ?? data.pix?.qrCode,
+    gatewayId:     data.transaction?.id ?? data.transactionId ?? data.id,
+    pixCopiaECola: data.pix?.copiaECola ?? data.pix?.code ?? data.pix?.qrCode ?? data.pixCode,
     qrBase64:      data.pix?.qrCodeImage ?? null,
     expiresAt:     new Date(Date.now() + 30 * 60 * 1000),
   }
