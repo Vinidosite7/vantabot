@@ -189,13 +189,15 @@ async function main() {
  
   if (process.env.APP_URL) {
     const webhookPath = '/webhook/telegram'
-    app.use(webhookPath, bot.webhookCallback(webhookPath))
     try {
       await bot.telegram.setWebhook(process.env.APP_URL + webhookPath)
       console.log('[bot] webhook configurado:', process.env.APP_URL + webhookPath)
     } catch(e) {
       console.error('[bot] erro ao setar webhook:', e.message)
     }
+    app.post(webhookPath, (req, res) => {
+      bot.handleUpdate(req.body, res)
+    })
   } else {
     bot.launch()
     console.log('[bot] rodando em modo polling (dev)')
