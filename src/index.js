@@ -188,7 +188,7 @@ async function main() {
   const PORT = Number(process.env.PORT) || 3000
  
   if (process.env.APP_URL) {
-    const webhookPath = '/telegram/' + config.botToken
+    const webhookPath = '/webhook/telegram'
     app.use(webhookPath, bot.webhookCallback(webhookPath))
     try {
       await bot.telegram.setWebhook(process.env.APP_URL + webhookPath)
