@@ -140,6 +140,11 @@ app.post('/webhook/pix', async (req, res) => {
   const body  = req.body
   const event = body.event
 
+app.post('/webhook/pix', async (req, res) => {
+  const body  = req.body
+  console.log('[webhook] body recebido:', JSON.stringify(body))
+  const event = body.event
+
   if (event !== 'TRANSACTION_PAID') return res.json({ ok: true })
 
   const gatewayId = body.transaction?.identifier
