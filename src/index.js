@@ -149,7 +149,7 @@ if (!omegaIdentifier) return res.json({ ok: true })
 
 const { data: transaction } = await supabase
     .from('transactions').select('id, lead_id, plano, status')
-    .eq('gateway_id', omegaIdentifier).single()
+    .eq('id', omegaIdentifier).single()
  
   if (!transaction) {
     console.warn('[webhook] transaction não encontrada:', omegaIdentifier)
