@@ -261,9 +261,11 @@ cron.schedule('0 * * * *', async () => {
 
 // ─── Start ────────────────────────────────────────────────────
 async function main() {
-  // Sobe o servidor Express (recebe webhook do Telegram e do gateway)
-  app.listen(config.port, () => {
-    console.log(`[server] rodando na porta ${config.port}`)
+  await new Promise((resolve) => {
+    app.listen(config.port, () => {
+      console.log(`[server] rodando na porta ${config.port}`)
+      resolve()
+    })
   })
 
   // Modo webhook (produção Railway)
