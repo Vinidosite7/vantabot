@@ -9,8 +9,8 @@ export const config = {
   pushinpayToken: process.env.PUSHINPAY_TOKEN,
 
   planos: {
-    '7dias':  { label: '7 dias',  valor: 27.90, dias: 7  },
-    '30dias': { label: '30 dias', valor: 67.90, dias: 30 },
+    '7dias':  { label: '7 dias',  valor: 3.00, dias: 7  },
+    '30dias': { label: '30 dias', valor: 7.90, dias: 30 },
   },
 }
 
