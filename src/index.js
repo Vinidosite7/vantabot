@@ -262,7 +262,12 @@ cron.schedule('0 * * * *', async () => {
 // ─── Start ────────────────────────────────────────────────────
 async function main() {
   await new Promise((resolve) => {
-    app.listen(config.port, '0.0.0.0', () => {
+  const PORT = process.env.PORT || 3000
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`[server] rodando na porta ${PORT}`)
+    resolve()
+  })
+})
       console.log(`[server] rodando na porta ${config.port}`)
       resolve()
     })
