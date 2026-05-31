@@ -15,10 +15,11 @@ export async function gerarPix({ valor, descricao, webhookUrl, externalId }) {
       identifier:  externalId,
       amount:      valor,
       client: {
-        name:     'Cliente VIP',
-        email:    'cliente@vantabot.com',
-        document: '12345678909',
-      },
+  name:     'Cliente VIP',
+  email:    'cliente@vantabot.com',
+  document: '12345678909',
+  phone:    '11999999999',
+},
       callbackUrl: 'https://vantabot-7wmy.onrender.com/webhook/pix',
     })
 
