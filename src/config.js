@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js'
 export const config = {
   botToken:       process.env.BOT_TOKEN,
   grupoVipId:     process.env.GRUPO_VIP_ID,
-  port:           Number(process.env.PORT) || 3000,
+  port: Number(process.env.PORT) || 3000,
   webhookSecret:  process.env.WEBHOOK_SECRET,
   pushinpayToken: process.env.PUSHINPAY_TOKEN,
 
