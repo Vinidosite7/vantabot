@@ -137,13 +137,13 @@ bot.command('status', async (ctx) => {
 })
  
 app.post('/webhook/pix', async (req, res) => {
-  if (req.query.secret !== config.webhookSecret) {
-    return res.status(401).json({ error: 'unauthorized' })
-  }
-  const body      = req.body
-  const gatewayId = body.id ?? body.payment_id
-  const status    = body.status
-  if (status !== 'paid') return res.json({ ok: true })
+  const body  = req.body
+  const event = body.event
+
+  if (event !== 'TRANSACTION_PAID') return res.json({ ok: true })
+
+  const gatewayId = body.transaction?.identifier
+  const status    = 'paid'
  
   const { data: transaction } = await supabase
     .from('transactions').select('id, lead_id, plano, status')
