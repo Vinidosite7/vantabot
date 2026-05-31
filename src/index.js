@@ -1,4 +1,4 @@
-open -e ~/telegram-bot/src/index.jsimport 'dotenv/config'
+import 'dotenv/config'
 import { Telegraf, Markup }  from 'telegraf'
 import express               from 'express'
 import cron                  from 'node-cron'
