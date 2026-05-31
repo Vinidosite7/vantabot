@@ -149,7 +149,10 @@ app.post('/webhook/pix', async (req, res) => {
     .from('transactions').select('id, lead_id, plano, status')
     .eq('gateway_id', gatewayId).single()
  
-  if (!transaction) { console.warn('[webhook] transaction não encontrada:', gatewayId); return res.json({ ok: true }) }
+  if (!transaction) {
+    console.warn('[webhook] transaction não encontrada:', gatewayId)
+    return res.json({ ok: true })
+  }
   if (transaction.status === 'paid') return res.json({ ok: true })
  
   await supabase.from('transactions')
@@ -184,26 +187,23 @@ cron.schedule('0 * * * *', async () => {
 async function main() {
   const PORT = Number(process.env.PORT) || 3000
  
-  await new Promise((resolve) => {
-    app.listen(PORT, '0.0.0.0', () => {
-      console.log('[server] rodando na porta ' + PORT)
-      resolve()
-    })
-  })
- 
   if (process.env.APP_URL) {
     const webhookPath = '/telegram/' + config.botToken
+    app.use(webhookPath, bot.webhookCallback(webhookPath))
     try {
       await bot.telegram.setWebhook(process.env.APP_URL + webhookPath)
       console.log('[bot] webhook configurado:', process.env.APP_URL + webhookPath)
     } catch(e) {
       console.error('[bot] erro ao setar webhook:', e.message)
     }
-    app.use(webhookPath, bot.webhookCallback(webhookPath))
   } else {
     bot.launch()
     console.log('[bot] rodando em modo polling (dev)')
   }
+ 
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log('[server] rodando na porta ' + PORT)
+  })
  
   process.once('SIGINT',  () => { try { bot.stop('SIGINT')  } catch(e) {} })
   process.once('SIGTERM', () => { try { bot.stop('SIGTERM') } catch(e) {} })
