@@ -147,7 +147,7 @@ app.post('/webhook/pix', async (req, res) => {
  
   const { data: transaction } = await supabase
     .from('transactions').select('id, lead_id, plano, status')
-    .eq('gateway_id', gatewayId).single()
+    .eq('id', gatewayId).single()
  
   if (!transaction) {
     console.warn('[webhook] transaction não encontrada:', gatewayId)
