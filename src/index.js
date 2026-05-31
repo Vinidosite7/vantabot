@@ -42,10 +42,11 @@ async function upsertLead(ctx, utmData) {
 }
  
 function menuPlanos() {
-  return Markup.inlineKeyboard([
-    [Markup.button.callback('7 dias — R$ 27,90',  'plano:7dias')],
-    [Markup.button.callback('30 dias — R$ 67,90', 'plano:30dias')],
-  ])
+  return Markup.inlineKeyboard(
+    Object.entries(config.planos).map(([key, p]) => [
+      Markup.button.callback(p.label + ' — R$ ' + p.valor.toFixed(2).replace('.', ','), 'plano:' + key)
+    ])
+  )
 }
  
 bot.start(async (ctx) => {
@@ -91,7 +92,7 @@ bot.action(/^plano:(.+)$/, async (ctx) => {
     .select('id').single()
  
   const webhookUrl = process.env.APP_URL
-    ? process.env.APP_URL + '/webhook/pix?secret=' + config.webhookSecret
+    ? process.env.APP_URL + '/webhook/pix'
     : 'https://placeholder.dev/webhook'
  
   const pix = await gerarPix({
@@ -138,24 +139,20 @@ bot.command('status', async (ctx) => {
  
 app.post('/webhook/pix', async (req, res) => {
   const body  = req.body
+  console.log('[webhook] body:', JSON.stringify(body))
+ 
   const event = body.event
-
-app.post('/webhook/pix', async (req, res) => {
-  const body  = req.body
-  console.log('[webhook] body recebido:', JSON.stringify(body))
-  const event = body.event
-
   if (event !== 'TRANSACTION_PAID') return res.json({ ok: true })
-
-  const gatewayId = body.transaction?.identifier
-  const status    = 'paid'
+ 
+  const transactionId = body.transaction?.identifier
+  if (!transactionId) return res.json({ ok: true })
  
   const { data: transaction } = await supabase
     .from('transactions').select('id, lead_id, plano, status')
-    .eq('id', gatewayId).single()
+    .eq('id', transactionId).single()
  
   if (!transaction) {
-    console.warn('[webhook] transaction não encontrada:', gatewayId)
+    console.warn('[webhook] transaction não encontrada:', transactionId)
     return res.json({ ok: true })
   }
   if (transaction.status === 'paid') return res.json({ ok: true })
@@ -194,15 +191,15 @@ async function main() {
  
   if (process.env.APP_URL) {
     const webhookPath = '/webhook/telegram'
+    app.post(webhookPath, (req, res) => {
+      bot.handleUpdate(req.body, res)
+    })
     try {
       await bot.telegram.setWebhook(process.env.APP_URL + webhookPath)
       console.log('[bot] webhook configurado:', process.env.APP_URL + webhookPath)
     } catch(e) {
       console.error('[bot] erro ao setar webhook:', e.message)
     }
-    app.post(webhookPath, (req, res) => {
-      bot.handleUpdate(req.body, res)
-    })
   } else {
     bot.launch()
     console.log('[bot] rodando em modo polling (dev)')
